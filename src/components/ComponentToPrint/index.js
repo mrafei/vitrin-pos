@@ -23,14 +23,14 @@ export default class ComponentToPrint extends React.Component {
     const date = moment(order.submitted_at).format("jYYYY/jMM/jDD - HH:mm:ss");
     const sortedItems = [...order.items];
     sortedItems.sort((a, b) => {
-      let firstTotal = a.deal.discounted_price;
-      let secondTotal = b.deal.discounted_price;
-      if (a.deal.modifiers)
-        for (let i = 0; i < a.deal.modifiers.length; i += 1)
-          firstTotal += a.deal.modifiers[i].price;
-      if (b.deal.modifiers)
-        for (let j = 0; j < b.deal.modifiers.length; j += 1)
-          secondTotal += b.deal.modifiers[j].price;
+      let firstTotal = a.discounted_price;
+      let secondTotal = b.discounted_price;
+      if (a.modifiers)
+        for (let i = 0; i < a.modifiers.length; i += 1)
+          firstTotal += a.modifiers[i].price;
+      if (b.modifiers)
+        for (let j = 0; j < b.modifiers.length; j += 1)
+          secondTotal += b.modifiers[j].price;
       if (firstTotal > secondTotal) return -1;
       if (firstTotal < secondTotal) return 1;
       return 0;
@@ -268,7 +268,7 @@ export default class ComponentToPrint extends React.Component {
               <>
                 <div
                   className={`d-flex flex-row px-2 ${
-                    item.deal.modifiers && item.deal.modifiers.length
+                    item.modifiers && item.modifiers.length
                       ? "pt-1"
                       : "u-border-bottom-dark py-1"
                   }`}
@@ -282,9 +282,9 @@ export default class ComponentToPrint extends React.Component {
                       whiteSpace: "pre-wrap",
                     }}
                   >
-                    {item.deal.title}{" "}
-                    {item.deal.variation_name &&
-                      `(${item.deal.variation_name})`}
+                    {item.title}{" "}
+                    {item.variation_name &&
+                      `(${item.variation_name})`}
                   </div>
                   <div
                     className="text-center u-fontWeightBold"
@@ -296,18 +296,18 @@ export default class ComponentToPrint extends React.Component {
                   {!printOptions.hideItemPrices ? (
                     <>
                       <div className="text-center" style={{ width: 80 }}>
-                        {priceFormatter(item.deal.discounted_price)}
+                        {priceFormatter(item.discounted_price)}
                       </div>
                       <div className="text-center" style={{ width: 80 }}>
                         {priceFormatter(
-                          item.deal.discounted_price * item.amount
+                          item.discounted_price * item.amount
                         )}
                       </div>
                     </>
                   ) : null}
                 </div>
-                {item.deal.modifiers && item.deal.modifiers.length
-                  ? item.deal.modifiers.map((_item) => (
+                {item.modifiers && item.modifiers.length
+                  ? item.modifiers.map((_item) => (
                       <div
                         className="d-flex flex-row px-2 pb-1 u-border-bottom-dark"
                         key={`order-item-${_item.id}`}
@@ -319,7 +319,7 @@ export default class ComponentToPrint extends React.Component {
                             whiteSpace: "pre-wrap",
                           }}
                         >
-                          {_item.title}
+                          {_item.modifier_title}
                         </div>
                         <div className="text-center" style={{ width: 35 }}>
                           {englishNumberToPersianNumber(item.amount)}
@@ -327,10 +327,10 @@ export default class ComponentToPrint extends React.Component {
                         {!printOptions.hideItemPrices ? (
                           <>
                             <div className="text-center" style={{ width: 80 }}>
-                              {priceFormatter(_item.price)}
+                              {priceFormatter(_item.discounted_price)}
                             </div>
                             <div className="text-center" style={{ width: 80 }}>
-                              {priceFormatter(_item.price * item.amount)}
+                              {priceFormatter(_item.discounted_price * item.amount)}
                             </div>
                           </>
                         ) : null}

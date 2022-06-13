@@ -81,13 +81,7 @@ const routes = [
     path: "/categories",
     icon: ICONS.GRID,
   },
-  {
-    id: 3,
-    disabled: true,
-    title: "مدیریت مشتریان",
-    path: "/users",
-    icon: ICONS.PROFILE,
-  },
+
   {
     id: 4,
     disabled: false,
@@ -120,17 +114,9 @@ const routes = [
 ];
 const subRoutes = [
   [{ id: 1, title: "همه سفارش‌ها", path: "/orders/all", icon: ICONS.ITEMS }],
-  [{ id: 1, title: "همه محصولات", path: "/categories/all", icon: ICONS.ITEMS }],
+  [{ id: 1, title: "همه محصولات", path: "/categories/all", icon: ICONS.ITEMS },{ id: 1, title: "برچسب ها", path: "/labels/all", icon: ICONS.ITEMS }],
+
   [
-    {
-      id: 1,
-      title: "لیست مشتریان",
-      path: "/users/upload",
-      icon: ICONS.PROFILE,
-    },
-  ],
-  [
-    { id: 1, title: "تخصیص پیک", path: "/delivery/assign", icon: ICONS.ITEMS },
     {
       id: 2,
       title: "لیست پیک‌ها",

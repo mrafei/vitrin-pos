@@ -11,15 +11,18 @@ export function* getShoppingAnalyticsData(action) {
     yield put(startLoading());
     const {
       response: { data },
+      status
     } = yield call(
       request,
       ORDER_ANALYTICS_DATA_API('shopping'),
       { id: action.data },
       'PATCH',
     );
+    console.log(data,status);
     if (data) yield put(setAnalyticsData(data));
     yield put(stopLoading());
   } catch (err) {
+    console.log(err);
     yield put(stopLoading());
   }
 }

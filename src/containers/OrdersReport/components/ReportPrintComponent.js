@@ -77,24 +77,8 @@ export default class ReportPrintComponent extends React.Component {
                       style={{ width: 80 }}
                     >
                       {item.format === false
-                        ? englishNumberToPersianNumber(item.online)
-                        : priceFormatter(item.online)}
-                    </div>
-                    <div
-                      className="text-center u-fontLarge u-fontWeightBold"
-                      style={{ width: 80 }}
-                    >
-                      {item.format === false
-                        ? englishNumberToPersianNumber(item.cash)
-                        : priceFormatter(item.cash)}
-                    </div>
-                    <div
-                      className="text-center u-fontLarge u-fontWeightBold"
-                      style={{ width: 80 }}
-                    >
-                      {item.format === false
-                        ? englishNumberToPersianNumber(item.total)
-                        : priceFormatter(item.total)}
+                        ? englishNumberToPersianNumber(item.report)
+                        : priceFormatter(item.report)}
                     </div>
                   </div>
                 );

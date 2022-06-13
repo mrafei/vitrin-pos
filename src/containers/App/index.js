@@ -49,6 +49,7 @@ import DeliveriesList from "../DeliveriesList";
 import PrinterSettings from "../PrinterSettings";
 import AssignDeliverer from "../AssignDeliverer";
 import Products from "../Products";
+import Labels from "../Labels";
 import EditProduct from "../EditProduct";
 import EditVariant from "../EditVariant";
 import Analytics from "../Analytics";
@@ -321,7 +322,6 @@ const App = function ({
               path="/delivery/deliverers/:id"
               component={EditDeliverer}
             />
-            <Route exact path="/delivery/assign" component={AssignDeliverer} />
             <Route
               exact
               path="/delivery/deliverers"
@@ -341,6 +341,7 @@ const App = function ({
             <Route exact path="/settings/printer" component={PrinterSettings} />
             <Route exact path="/settings/sound" component={SoundSettings} />
             <Route exact path="/categories/:id" component={Products} />
+            <Route exact path="/labels/:id" component={Labels} />
             <Route
               exact
               path="/products/new/:category"

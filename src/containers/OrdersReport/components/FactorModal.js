@@ -12,11 +12,6 @@ function FactorModal({ _onClose, open, business, printers, report, date }) {
     title: "اطلاعات روی فیش",
     sections: [],
   });
-  const {
-    cash_on_delivery_stats: cash = {},
-    online_stats: online = {},
-    total_stats: total = {},
-  } = report;
 
   useEffect(() => {
     setPrinterOptions({
@@ -25,58 +20,44 @@ function FactorModal({ _onClose, open, business, printers, report, date }) {
       sections: [
         {
           id: 1,
-          online: online.count,
-          cash: cash.count,
-          total: total.count,
+          report: report?.count,
           text: "تعداد",
           show: true,
           format: false,
         },
         {
           id: 2,
-          online: online.total_sales,
-          cash: cash.total_sales,
-          total: total.total_sales,
+          report: report?.total_sales,
           text: "فروش کل (ناخالص)",
           show: true,
         },
         {
           id: 3,
-          online: online.total_discount_amount,
-          cash: cash.total_discount_amount,
-          total: total.total_discount_amount,
+          report: report?.total_discount,
           text: "تخفیف",
           show: true,
         },
         {
           id: 4,
-          online: online.total_delivery_price,
-          cash: cash.total_delivery_price,
-          total: total.total_delivery_price,
+          report: report?.total_delivery_price,
           text: "کرایه",
           show: true,
         },
         {
           id: 5,
-          online: online.total_taxing_price,
-          cash: cash.total_taxing_price,
-          total: total.total_taxing_price,
+          report: report?.total_taxing_price,
           text: "مالیات",
           show: true,
         },
         {
           id: 6,
-          online: online.total_actual_sales_without_delivery,
-          cash: cash.total_actual_sales_without_delivery,
-          total: total.total_actual_sales_without_delivery,
+          report: report?.total_actual_sales_without_delivery,
           text: "فروش خالص (بدون کرایه)",
           show: true,
         },
         {
           id: 7,
-          online: online.total_actual_sales_with_delivery,
-          cash: cash.total_actual_sales_with_delivery,
-          total: total.total_actual_sales_with_delivery,
+          report: report?.total_actual_sales_with_delivery,
           text: "فروش خالص (با کرایه)",
           show: true,
           roundBorder: true,

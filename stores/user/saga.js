@@ -86,6 +86,7 @@ export function* getBusinesses() {
     const {
       response: { meta, data },
     } = yield call(request, BUSINESSES_BY_OWNER_API);
+    console.log(data);
     if (meta.status_code >= 200 && meta.status_code <= 300) {
       const businessesWithVitrin = data.filter(
         (b) => b.get_vitrin_absolute_url
@@ -165,6 +166,7 @@ export function* updateDeviceByIdSaga(action) {
     } = yield call(request, GET_BUSINESS_DEVICES_API, {
       business_slug: action.data,
     });
+    console.log(businesses);
     yield put(
       setBusinesses(
         businesses.map((business) => {
