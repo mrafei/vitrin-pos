@@ -33,7 +33,7 @@ export const CATEGORIES_ITEMS_CHANGE_ORDER_API = (id) =>
 export const GROUP_DISCOUNT_ON_DEALS = (id) =>
   `${BASE_URL}deal_categories/${id}/group_discount_on_deals/`;
 export const USER_ORDERS_ITEMS_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/`;
 export const BUSINESS_ORDERS_API = (plugin) =>
   `${BASE_URL}${plugin}_orders/by_business_site_domain/`;
 export const CUSTOMER_ORDERS_API = `${BASE_URL}shopping_orders/by_business_by_user_id/`;
