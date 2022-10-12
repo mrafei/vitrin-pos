@@ -86,28 +86,27 @@ import { amplifyMedia } from "../../../utils/helper";
 import ShoppingSettings from "../ShoppingSettings";
 
 const App = function ({
-  history,
-  _getBusinesses,
-  location,
-  siteDomain,
-  _setSnackBarMessage,
-  snackBarMessage,
-  _getAdminOrders,
-  businessTitle,
-  progressLoading,
-  _setSiteDomain,
-  businesses,
-  _getBusiness,
-  reload,
-  _toggleHamiModal,
-  showHamiModal,
-  _acceptOrder,
-  user,
-  _setUser,
-  _setFirebaseToken,
-  firebaseToken,
-  _updateDeviceById,
-}) {
+                        history,
+                        _getBusinesses,
+                        location,
+                        siteDomain,
+                        _setSnackBarMessage,
+                        snackBarMessage,
+                        _getAdminOrders,
+                        businessTitle,
+                        progressLoading,
+                        _setSiteDomain,
+                        businesses,
+                        _getBusiness,
+                        reload,
+                        _toggleHamiModal,
+                        showHamiModal,
+                        _acceptOrder,
+                        user,
+                        _setUser,
+                        firebaseToken,
+                        _updateDeviceById,
+                      }) {
   useInjectReducer({ key: "app", reducer });
   useInjectSaga({ key: "app", saga });
   const [dialog, setDialog] = useState(false);
@@ -115,16 +114,24 @@ const App = function ({
   const customersInterval = useRef(null);
   const productsInterval = useRef(null);
   const getUserInfo = async () => {
-    const {
-      response: {
-        data,
-        meta: { status_code },
-      },
-    } = await request(USER_INFO_API);
-    if (status_code === 200) {
-      _setUser(data);
+    try{
+      const {
+        response: {
+          data,
+          meta: { status_code },
+        },
+      } = await request(USER_INFO_API);
+      if (status_code === 200) {
+        _setUser(data);
+      }
+    }catch (e) {
+      console.log(e)
     }
   };
+  const businessSlugs = useMemo(
+    () => businesses?.map((business) => business.slug) || [],
+    [businesses]
+  );
   useEffect(() => {
     ipcRenderer.send("disable-close");
     const token = localStorage.getItem("token");
@@ -149,18 +156,22 @@ const App = function ({
     ipcRenderer.on("closePrompt", () => {
       setDialog(true);
     });
-    initPushNotification(
-      _setSnackBarMessage,
-      history,
-      receiveOrder,
-      _setFirebaseToken
-    );
   }, []);
+  useEffect(() => {
+    if(businessSlugs.length)
+      initPushNotification(
+        _setSnackBarMessage,
+        history,
+        receiveOrder,
+        businessSlugs
+      );
+  },[businessSlugs])
   const receiveOrder = async (payload) => {
-    let split = payload.click_action.split("/");
+    const split = payload.link.split("/");
     const orderId = split[split.length - 1];
+
     const response = await request(USER_ORDERS_ITEMS_API(orderId, "shopping"));
-    const order = response?.response?.data || {};
+    const order = response?.response?.data || {id: orderId};
     const isBusinessHamiIntegrated =
       localStorage.getItem("integrated") === "hami" &&
       (
@@ -180,40 +191,46 @@ const App = function ({
       !isBusinessHamiIntegrated ||
       localStorage.getItem("hamiAllowVitrinNotification")
     ) {
-      ipcRenderer.send("orderReceived", payload);
+      ipcRenderer.send("orderReceived", {id: orderId, siteDomain: order.business_site_domain});
       const audio = new Audio(pristine);
       const volume = parseFloat(localStorage.getItem("volume")) || 20;
       amplifyMedia(audio, volume);
-      if (localStorage.getItem("volume") !== "0") audio.play();
-      audio.play();
+      if (!localStorage.getItem("volume") || localStorage.getItem("volume") !== "0") audio.play();
     }
     setTimeout(_getAdminOrders, 200);
   };
-  const businessSiteDomains = useMemo(
-    () => businesses?.map((business) => business.site_domain) || [],
-    [businesses]
-  );
+
+  // useEffect(() => {
+  //   if (firebaseToken)
+  //     businessSiteDomains.map((siteDomain) => {
+  //       request(
+  //         PUSH_NOTIFICATION_API,
+  //         {
+  //           label: `Admin Panel ${siteDomain}`,
+  //           token: firebaseToken,
+  //         },
+  //         "POST"
+  //       );
+  //     });
+  // }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
   useEffect(() => {
-    if (firebaseToken)
-      businessSiteDomains.map((siteDomain) => {
-        request(
-          PUSH_NOTIFICATION_API,
-          {
-            label: `Admin Panel ${siteDomain}`,
-            token: firebaseToken,
-          },
-          "POST"
-        );
-      });
-  }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
-  useEffect(() => {
+    console.log(siteDomain,"siteDomain 1 ")
     if (siteDomain) _getBusiness();
+    history.push('/orders')
   }, [siteDomain]);
+
+  useEffect(() => {
+    if(siteDomain) {
+      const siteDomainFromLocalStorage = localStorage.getItem("selectedSiteDomain")
+      if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage && siteDomainFromLocalStorage !== "undefined")
+        _setSiteDomain(siteDomainFromLocalStorage)
+    }
+  }, [siteDomain, localStorage.getItem("selectedSiteDomain")])
+
   useEffect(() => {
     clearInterval(orderInterval.current);
     clearInterval(customersInterval.current);
     clearInterval(productsInterval.current);
-
     if (
       localStorage.getItem("integrated") === "hami" &&
       !localStorage.getItem("hamiPreventSendOrders")
@@ -281,7 +298,8 @@ const App = function ({
       clearInterval(orderInterval.current);
       clearInterval(productsInterval.current);
     };
-  }, [businesses, user?.id]);
+  }, [businesses, user?.id])
+
   if ((!siteDomain || !businessTitle) && location.pathname !== "/login")
     return (
       <div
@@ -291,16 +309,21 @@ const App = function ({
         <LoadingIndicator />
       </div>
     );
+  const onChangeBusiness = (value) => {
+    localStorage.setItem("selectedSiteDomain", value)
+    _setSiteDomain(value)
+  }
   return (
     <>
-      <div className="u-height-100vh w-100 u-background-melo-grey d-flex h-100">
+      <div className="u-height-100vh w-100 d-flex h-100" >
         <Layout
           reload={reload}
           location={location}
           title={businessTitle}
           loading={progressLoading}
-          changeBusiness={_setSiteDomain}
+          changeBusiness={onChangeBusiness}
           businesses={businesses}
+          siteDomain={siteDomain}
         >
           <Switch>
             <Route exact path="/empty" component={LoadingIndicator} />
@@ -444,7 +467,6 @@ function mapDispatchToProps(dispatch) {
     _toggleHamiModal: (show) => dispatch(toggleHamiModal(show)),
     _acceptOrder: (data) => dispatch(acceptOrder(data)),
     _setUser: (data) => dispatch(setUser(data)),
-    _setFirebaseToken: (data) => dispatch(setFirebaseToken(data)),
     _updateDeviceById: (data) => dispatch(updateDeviceById(data)),
   };
 }

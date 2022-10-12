@@ -197,6 +197,7 @@ function Layout({
   changeBusiness,
   businesses,
   reload,
+  siteDomain
 }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -277,6 +278,7 @@ function Layout({
                     className="u-fontWeightBold u-text-primary-blue"
                     id="default"
                     value={business.site_domain}
+                    selected={siteDomain === business.site_domain}
                   >
                     {business.title}
                   </option>
