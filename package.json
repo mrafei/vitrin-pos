@@ -73,7 +73,7 @@
     "iconv-lite": "^0.6.2",
     "image-compressor": "^2.0.3",
     "material-ui-chip-input": "^1.1.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.0",
     "prop-types": "^15.7.2",
     "qrious": "^4.0.2",
     "qs": "^6.9.4",
